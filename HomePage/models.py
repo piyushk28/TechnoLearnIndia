@@ -1,7 +1,10 @@
-from django.db import models
-from django.db.models.signals import pre_save
-from .utils import unique_slug_generator
 import os, random
+
+
+from django.db import models
+from django.urls import reverse
+from django.db.models.signals import pre_save
+
 
 class HomePage(models.Model):
 	title					= models.CharField(max_length=30)
@@ -10,22 +13,37 @@ class HomePage(models.Model):
 	about_title_second		= models.CharField(max_length=70)
 	about_second 			= models.TextField(max_length=300)
 	contact_no				= models.BigIntegerField()
-	conatct_email			= models.EmailField()
+	contact_email			= models.EmailField()
 	facebook_url 			= models.URLField(blank= True, null= True, help_text= 'Optional,  If added respective site icon will be shown on the home page')
 	instagram_url 			= models.URLField(blank= True, null= True, help_text= 'Optional,  If added respective site icon will be shown on the home page')
 	twitter_url 			= models.URLField(blank= True, null= True, help_text= 'Optional,  If added respective site icon will be shown on the home page')
-	slug					= models.SlugField(blank = True, null = True)
+	is_active				= models.BooleanField(default=False)
+	created					= models.DateTimeField(auto_now_add=True)
 
 
 	def __str__(self):
-		return self.id
+		return '{id}'.format(id=self.id)
 
 
-def pre_save_slug_receiver(sender, instance, *args, **kwargs):
-	if not instance.slug:
-		instance.slug = unique_slug_generator(instance)
 
-pre_save.connect(pre_save_slug_receiver, sender= HomePage)
+	# def get_absolute_url(self)
+	# 	return reverse('home:detail',kwargs={'slug':self.slug})
+
+def pre_save_is_active_signal(sender, instance, *args, **kwargs):
+	if instance.is_active == True:
+		qs = sender.objects.filter(is_active= True)
+		if qs.exists():
+			qs.update(is_active=False)
+	if instance.is_active == False:
+		qs = sender.objects.filter(is_active= True).exclude(id=instance.id)
+		print('in')
+		print(qs.exists())
+		if not qs.exists():
+			instance.is_active = True
+
+
+pre_save.connect(pre_save_is_active_signal, sender= HomePage)
+
 
 class HomeImage(models.Model):
 
@@ -46,43 +64,41 @@ class HomeImage(models.Model):
 
 	home_page	= models.ForeignKey(HomePage, on_delete= models.CASCADE)
 	image 		= models.ImageField(upload_to=upload_image_path)
+	created			= models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return self.id
+		return '{id}'.format(id =self.id)
 
 
+class_choices 	=(	('5th',	'V'),
+					('6th', 'VI'),
+					('7th', 'VII'),
+					('8th', 'VIII'),
+					('9th', 'IX'),
+					('10th', 'X'),
+					('11th', 'XI'),
+					('12th', 'XII'),
+					('Other', 'Other'),
+	)
+
+
+reference_choices	= ( ('social_site','Social Site'),
+						('pamphlet', 'Pamphlet'),
+						('website', 'Website'),
+						('friend','Friend'),
+						('Other', 'Other'),
+	)
+
+state_choices = (	('Delhi', 'Delhi'),
+					('Gurgaon','Gurgaon'),
+					('Noida','Noida'),
+					('Faridabad ', 'Faridabad '),
+					('Ghaziabad', 'Ghaziabad'),
+					('Jaipur', 'Jaipur'),
+					('Other','Other')
+)
 
 class RegisteredUser(models.Model):
-
-	class_choices 	=(	('5th',	'V'),
-						('6th', 'VI'),
-						('7th', 'VII'),
-						('8th', 'VIII'),
-						('9th', 'IX'),
-						('10th', 'X'),
-						('11th', 'XI'),
-						('12th', 'XII'),
-						('Other', 'Other'),
-		)
-	other_ref_value ='Other'
-
-	reference_choices	= ( ('social_site','Social Site'),
-							('pamphlet', 'Pamphlet'),
-							('website', 'Website'),
-							('friend','Friend'),
-							('Other', other_ref_value),
-		)
-
-	state_choices = (	('Delhi', 'Delhi'),
-						('Gurgaon','Gurgaon'),
-						('Noida','Noida'),
-						('Faridabad ', 'Faridabad '),
-						('Ghaziabad', 'Ghaziabad'),
-						('Jaipur', 'Jaipur'),
-						('Other','Other')
-	)
- 
-
 
 	email 			= models.EmailField(unique= True)				
 	contact_no		= models.BigIntegerField()
@@ -95,6 +111,7 @@ class RegisteredUser(models.Model):
 	school_name		= models.CharField(max_length= 100)
 	student_class	= models.CharField(max_length=15,choices=class_choices)
 	reference		= models.CharField(max_length= 50, choices = reference_choices)
+	created			= models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return self.email

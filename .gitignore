@@ -1,5 +1,5 @@
 # Not ready for Production
-
+*.sqlite3
 
 
 .DS_STORE
@@ -19,6 +19,7 @@ pip-selfcheck.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+migrations/
 *.py[cod]
 *$py.class
 
