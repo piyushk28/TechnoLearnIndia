@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='HomeImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=HomePage.models.HomeImage.upload_image_path)),
+                ('image', models.ImageField(upload_to=HomePage.models.upload_image_path)),
             ],
         ),
         migrations.CreateModel(

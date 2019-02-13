@@ -44,23 +44,24 @@ def pre_save_is_active_signal(sender, instance, *args, **kwargs):
 
 pre_save.connect(pre_save_is_active_signal, sender= HomePage)
 
+def get_filename_ext(filepath):
+    base_name=os.path.basename(filepath)
+    name, ext=os.path.splitext(base_name)
+    return name, ext
+
+# To return a  new  path for  image
+def upload_image_path(instance,filename):
+    new_filename=random.randint(1,2345356465)
+    name, ext =  get_filename_ext(filename)
+    final_filename = '{new_filename}{ext}'.format(new_filename=new_filename,ext=ext)
+    return 'home/{new_filename}/{final_filename}'.format(
+            new_filename=new_filename,
+            final_filename=final_filename
+            )
 
 class HomeImage(models.Model):
 
-	def get_filename_ext(filepath):
-	    base_name=os.path.basename(filepath)
-	    name, ext=os.path.splitext(base_name)
-	    return name, ext
 
-	# To return a  new  path for  image
-	def upload_image_path(instance,filename):
-	    new_filename=random.randint(1,2345356465)
-	    name, ext =  get_filename_ext(filename)
-	    final_filename = '{new_filename}{ext}'.format(new_filename=new_filename,ext=ext)
-	    return 'student/{new_filename}/{final_filename}'.format(
-	            new_filename=new_filename,
-	            final_filename=final_filename
-	            )
 
 	home_page	= models.ForeignKey(HomePage, on_delete= models.CASCADE)
 	image 		= models.ImageField(upload_to=upload_image_path)

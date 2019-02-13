@@ -23,25 +23,39 @@ def home_redirect_view(request):
 	return redirect(reverse('homepage:home', kwargs={'pk':instance.pk}))
 
 
-class HomePageView(DetailView):
-	model = HomePage
-	template_name='index.html'
+# class HomePageView(DetailView):
+# 	model = HomePage
+# 	template_name='index.html'
 
-	def get_object(self, *args, **kwargs):
-		request = self.request
-		pk = self.kwargs.get('pk')
+# 	def get_object(self, *args, **kwargs):
+		
 
-		instance = get_object_or_404(HomePage,pk=pk,is_active= True)
+# 	def get_context_data(self, *args, **kwargs):
+# 		context = super(HomePageView, self).get_context_data(*args, **kwargs)
 
-		return instance
+		
 
 
-def register_user(request):
+
+
+def home_view(request, *args, **kwargs ):
+	pk = kwargs.get('pk')
+
+	instance = get_object_or_404(HomePage,pk=pk,is_active= True)
+	context={'object': instance}
+
 	form = RegisterForm(request.POST or None)
-	context = {'form':form}
-	if request.method == 'POST':
-		if form.is_valid():
-			form.save()
-			return redirect('home_redirect')
-	return render(request,'HomePage/register.html', context)
 
+	context['form']= form
+	if request.method == 'POST':
+		print(request.method)
+		if form.is_valid():
+			form.save(commit=True)
+			print('inside')
+			return redirect('home_redirect')
+
+	image_qs=HomeImage.objects.filter(home_page=instance).first()
+	print(image_qs)
+	print(image_qs.image.url)
+	context['image']=image_qs
+	return render(request,'index.html',context)

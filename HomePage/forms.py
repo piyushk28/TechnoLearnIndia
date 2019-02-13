@@ -1,6 +1,16 @@
 from django import forms
-from django.forms.widgets import EmailInput,TextInput,NumberInput
-from .models import (RegisteredUser,class_choices,reference_choices,state_choices)
+from django.forms.widgets import (	EmailInput,
+									TextInput,
+									Textarea,
+									NumberInput,
+									DateInput,
+									Select
+								)
+from .models import (	RegisteredUser,
+						class_choices,
+						reference_choices,
+						state_choices
+					)
 
 
 class RegisterForm(forms.ModelForm):
@@ -13,7 +23,72 @@ class RegisterForm(forms.ModelForm):
 					'address','city','pin_code'
 				]
 
-        		
+		widgets = {
+					'email' : EmailInput(
+						attrs={
+							'class' : 'form-control studen-email',
+							'placeholder': 'Your Email'
+						}
+					),
+
+					'full_name': TextInput(
+						attrs = {
+							'class':'form-control student-title',
+							'placeholder':'Your title'
+						}
+					),
+
+					'father_name':TextInput(
+						attrs = {
+							'class':'form-control student-father_name',
+							'placeholder':"Father's Name"
+						}
+					),
+					'date_of_birth':DateInput(
+						attrs = {
+							'class':'form-control student-d_o_b ',
+							}
+					),
+					'school_name':TextInput(
+						attrs= {
+							'class':'form-control student-school'
+							}
+						),
+					'student_class':Select(
+						attrs={
+							'class':'form-control student-class'
+							}
+						),
+					'contact_no':NumberInput(
+						attrs ={
+							'class':'form-control student-contact'
+							}
+						),
+					'reference':Select(
+						attrs={
+							'class':'form-control student-reference',
+							'placeholder':'Website'
+							}
+						),
+					'address':Textarea(
+						attrs={
+							'rows':2,
+							'class':'form-control student-address',
+							}
+						),
+					'city': Select(
+						attrs = {
+							'class':'form-control student_city',
+							}
+						),
+					'pin_code':NumberInput(
+						attrs={
+							'class':'form-control student-pin_code',
+							}
+						),
+					}
+
+
 
 	def clean_contact_no(self):
 		num  =self.cleaned_data.get('contact_no')
