@@ -10,22 +10,9 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Creative - Start Bootstrap Theme</title>
+  <title>TechnoLearnIndia</title>
 
   {% include 'css.html' %}
-  <style type="text/css">
-    
-    .modal-content{
-      border-radius: 20px;
-      }
-
-    .modal-header{
-      border-radius: 20px 20px 0 0;
-      background: #f05f40;
-      color:#fff;
-
-    }
-  </style>
 
 </head>
 
@@ -234,7 +221,7 @@
   <section class="bg-dark text-white" id = 'register'>
     <div class="container text-center">
       <h2 class="mb-5 ">Join Us Today!</h2>
-      <button class="btn btn-light btn-xl sr-button" data-toggle="modal" data-target="#modalContactForm" >Register Now!</button>
+      <button class="btn btn-light btn-xl sr-button" id='registerButton'data-toggle="modal" data-target="#modalContactForm" >Register Now!</button>
     </div>
   </section>
 
@@ -249,9 +236,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method='POST' class="my-auto mx-5 ">{% csrf_token %}
+        <form method='POST' class="my-auto mx-5 " id = 'registerForm'>{% csrf_token %}
           <div class="my-3">
             {{form.as_p}}
+        <div id='formmessage'></div>
           <button type ='submit'class="btn btn-dark submit_button">Register</button>
           </div>
         </form>
@@ -259,7 +247,7 @@
     </div>
   </div>
 
-<section id="contact">
+<section id="contact ">
 	  <div class="container">
 	    <div class="row">
 	      <div class="col-lg-8 mx-auto text-center">
@@ -280,19 +268,33 @@
 	        </p>
 	      </div>
 	    </div>
+      {% if object.facebook_url or object.instagram_url or object.twitter_url %}
+      <div class="row my-3">
+        {% if object.facebook_url %}
+         <div class="col-lg-4 mx-auto text-center">
+          <a href=""><i class="fab fa-facebook-f fa-3x mb-3 sr-contact-1" style="color:black"></i><p>Facebook</p>
+          </a>
+        </div>
+        {% endif %}
+        {% if object.instagram_url %}
+          <div class="col-lg-4 mx-auto text-center">
+          <a href=""><i class="fab fa-instagram fa-3x mb-3 sr-contact-1" style="color:black"></i><p>Instagram</p>
+          </a>
+        </div>
+        {% endif %}
+        {% if object.twitter_url %}
+          <div class="col-lg-4 mx-auto text-center">
+          <a href=""><i class="fab fa-twitter fa-3x mb-3 sr-contact-1" style="color:black"></i><p>Twitter</p>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
 	  </div>
-	</section>
+  </section>
 
 {% include 'js.html' %}
-</body>
 
-<script>
-  $( function(){
-    $('.submit_button').on('submit'){
-      alert('submitted')
-    }
-  }
-    );
-</script>
+</body>
 
 </html>

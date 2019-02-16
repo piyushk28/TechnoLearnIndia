@@ -2,8 +2,7 @@ from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
-from django.http import Http404
+from django.http import Http404,JsonResponse,HttpResponse
 from .models import HomePage, HomeImage, RegisteredUser
 from .forms import RegisterForm
 
@@ -50,9 +49,16 @@ def home_view(request, *args, **kwargs ):
 	if request.method == 'POST':
 		print(request.method)
 		if form.is_valid():
-			form.save(commit=True)
-			print('inside')
+			form.save()
+			# print('inside')
+			if request.is_ajax():
+				return JsonResponse({'success':'true'})
 			return redirect('home_redirect')
+		else:
+			error = form.errors
+			if request.is_ajax():
+				return JsonResponse({'error':error})
+
 
 	image_qs=HomeImage.objects.filter(home_page=instance).first()
 	print(image_qs)

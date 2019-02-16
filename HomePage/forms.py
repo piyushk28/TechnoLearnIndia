@@ -12,15 +12,23 @@ from .models import (	RegisteredUser,
 						state_choices
 					)
 
+from technolearnindia.settings import DATE_INPUT_FORMATS 
+
 
 class RegisterForm(forms.ModelForm):
+	date_of_birth = forms.DateField(input_formats=DATE_INPUT_FORMATS,widget=DateInput(
+						attrs = {
+							'class':'form-control student-d_o_b ',
+							'placeholder':'DD-MM-YYYY',
+							}
+					),)
 
 	class Meta:
 		model = RegisteredUser
 
-		fields = [	'email','full_name','father_name','date_of_birth',
-					'school_name','student_class','contact_no','reference',
-					'address','city','pin_code'
+		fields = [	'full_name','father_name','email','date_of_birth',
+					'school_name','student_class','contact_no','address',
+					'city','pin_code','reference'
 				]
 
 		widgets = {
@@ -44,36 +52,37 @@ class RegisterForm(forms.ModelForm):
 							'placeholder':"Father's Name"
 						}
 					),
-					'date_of_birth':DateInput(
-						attrs = {
-							'class':'form-control student-d_o_b ',
-							}
-					),
 					'school_name':TextInput(
 						attrs= {
-							'class':'form-control student-school'
+							'class':'form-control student-school',
+							'placeholder':'Your School Name'
 							}
 						),
 					'student_class':Select(
 						attrs={
-							'class':'form-control student-class'
+							'label':'Standard',
+							'class':'form-control student-class',
+							'placeholder':'Your  Current Standard',
 							}
 						),
 					'contact_no':NumberInput(
 						attrs ={
-							'class':'form-control student-contact'
+							'class':'form-control student-contact',
+							'placeholder':'9876543210',
+							'label':'Mobile No.'
+
 							}
 						),
 					'reference':Select(
 						attrs={
 							'class':'form-control student-reference',
-							'placeholder':'Website'
 							}
 						),
 					'address':Textarea(
 						attrs={
 							'rows':2,
 							'class':'form-control student-address',
+							'label':'Full Address',
 							}
 						),
 					'city': Select(
