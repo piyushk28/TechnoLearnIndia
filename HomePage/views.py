@@ -61,7 +61,12 @@ def home_view(request, *args, **kwargs ):
 
 
 	image_qs=HomeImage.objects.filter(home_page=instance).first()
-	print(image_qs)
-	print(image_qs.image.url)
-	context['image']=image_qs
+	# if(image_qs.count <= 6):
+	# 	context['image']=image_qs
+	
+	# else:
+	# 	context['image'] = image_qs[0:6]
+
+	if image_qs:
+		context['image']=image_qs
 	return render(request,'index.html',context)

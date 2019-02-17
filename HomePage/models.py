@@ -63,9 +63,11 @@ class HomeImage(models.Model):
 
 
 
-	home_page	= models.ForeignKey(HomePage, on_delete= models.CASCADE)
+	home_page	= models.ForeignKey(HomePage, on_delete= models.CASCADE, help_text="""Please Assign Only 6 image per HomePage,
+									 6 Images are must for the Correct Layout of the page,
+									 If there are more than 6 images, Only first 6 of them will be shown..""")
 	image 		= models.ImageField(upload_to=upload_image_path)
-	created			= models.DateTimeField(auto_now_add=True)
+	created		= models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return '{id}'.format(id =self.id)
